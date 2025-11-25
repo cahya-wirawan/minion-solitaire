@@ -17,15 +17,38 @@
         #ui-container {
             position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
             text-align: center; color: #fce029; text-shadow: 1px 1px 2px #000;
+            /* CRITICAL: pointer-events: none lets clicks pass through empty space to the 3D canvas */
             pointer-events: none; 
             z-index: 10;
             width: 90%;
             max-width: 600px;
         }
         
-        h1 { margin: 5px 0; font-size: 1.5rem; }
+        h1 { margin: 5px 0 0 0; font-size: 1.5rem; }
         
+        /* GitHub Link Style */
+        .github-link {
+            display: inline-block;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #4a90e2;
+            text-decoration: none;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 10px;
+            border-radius: 15px;
+            /* CRITICAL: This re-enables clicking for the link specifically */
+            pointer-events: auto; 
+            cursor: pointer;
+            transition: color 0.2s, background 0.2s;
+        }
+        .github-link:hover {
+            color: #fce029;
+            background: rgba(0,0,0,0.8);
+            text-decoration: underline;
+        }
+
         #controls {
+            /* CRITICAL: Re-enable clicking for buttons */
             pointer-events: auto;
             background: rgba(0,0,0,0.6); padding: 10px 15px; border-radius: 15px;
             display: inline-block; border: 2px solid #4a90e2; margin-top: 5px;
@@ -48,6 +71,11 @@
 <body>
     <div id="ui-container">
         <h1>3D Minion Solitaire</h1>
+        <a href="https://github.com/cahya-wirawan/minion-solitaire" target="_blank" rel="noopener noreferrer" class="github-link">
+            View on GitHub: cahya-wirawan/minion-solitaire
+        </a>
+        <br>
+
         <div id="controls">
             <button id="btn-play">▶ Auto Play</button>
             <button id="btn-step">Step >></button>
@@ -225,7 +253,7 @@
         }
     }
 
-    // --- UPDATED MINION MODEL (Longer legs, angled arms) ---
+    // --- UPDATED MINION MODEL (Rigged, Angled Arms, Longer Legs) ---
     function createMinionMesh() {
         const group = new THREE.Group();
         group.userData.limbs = {}; 
@@ -276,7 +304,7 @@
             glove.position.y = -0.35;
             armMesh.add(glove);
             pivot.add(armMesh);
-            // UPDATE: Increased outward angle for natural pose
+            // Angled outward
             pivot.rotation.z = isLeft ? -0.5 : 0.5; 
             return pivot;
         }
@@ -287,7 +315,6 @@
         group.userData.limbs.leftArm = leftArm; group.userData.limbs.rightArm = rightArm;
 
         // 5. LEGS & FEET (Pivots at hip)
-        // UPDATE: Longer leg geometry (0.3 -> 0.6)
         const legGeo = new THREE.CapsuleGeometry(0.12, 0.6, 4, 8);
         const bootGeo = new THREE.BoxGeometry(0.25, 0.2, 0.35);
         const bootMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
@@ -295,15 +322,12 @@
         function createLeg(isLeft) {
             const pivot = new THREE.Group();
             const xOffset = isLeft ? -0.25 : 0.25;
-            // UPDATE: Raised hip pivot slightly
             pivot.position.set(xOffset, 0.6, 0); 
 
             const legMesh = new THREE.Mesh(legGeo, pantsMat);
-            // UPDATE: Adjusted offset for longer leg
             legMesh.position.y = -0.35; 
 
             const boot = new THREE.Mesh(bootGeo, bootMat);
-            // UPDATE: Adjusted boot offset
             boot.position.y = -0.35;
             boot.position.z = 0.1; 
             legMesh.add(boot);
