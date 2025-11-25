@@ -1,6 +1,9 @@
 # Minion Solitaire 3D
 
+
 A 3D animated visualization of the classic Peg Solitaire game, featuring Minion-inspired characters. This project solves the English Peg Solitaire board and animates the solution with kicks and sound effects.
+
+**English Peg Solitaire**: A classic board game where the objective is to remove all but one peg from a cross-shaped board by jumping one peg over another into an empty hole, removing the jumped peg.
 
 ## Features
 
